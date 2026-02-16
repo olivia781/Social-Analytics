@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Automations Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1A1A2E;
+            color: #FFFFFF;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 30px 40px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888899;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 35px;
+        }
+        .card {
+            background: #16213E;
+            border-radius: 12px;
+            padding: 24px 16px;
+            text-align: center;
+        }
+        .card .value {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .card .label {
+            font-size: 13px;
+            color: #888899;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card:nth-child(1) .value { color: #FF6B9D; }
+        .card:nth-child(2) .value { color: #4ECDC4; }
+        .card:nth-child(3) .value { color: #A78BFA; }
+        .card:nth-child(4) .value { color: #FFD93D; }
+
+        .top-performer {
+            text-align: center;
+            color: #FFD93D;
+            font-size: 15px;
+            margin-bottom: 35px;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            background: #16213E;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .chart-container h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+        }
+
+        /* Full width chart */
+        .chart-full {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .summary-cards { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+            .card .value { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Social Automations Dashboard</h1>
+<div class="subtitle">Weekly Performance Tracking</div>
+
+<!-- Summary Cards -->
+<div class="summary-cards" id="summaryCards"></div>
+<div class="top-performer" id="topPerformer"></div>
+
+<!-- Charts -->
+<div class="charts-grid">
+    <div class="chart-container chart-full">
+        <h2>📈 Views Over Time</h2>
+        <div class="chart-wrapper"><canvas id="viewsChart"></canvas></div>
+    </div>
+    <div class="chart-container">
+        <h2>❤️ Likes Over Time</h2>
+        <div class="chart-wrapper"><canvas id="likesChart"></canvas></div>
+    </div>
+    <div class="chart-container">
+        <h2>💬 Comments Over Time</h2>
+        <div class="chart-wrapper"><canvas id="commentsChart"></canvas></div>
+    </div>
+    <div class="chart-container">
+        <h2>🔄 Shares Over Time</h2>
+        <div class="chart-wrapper"><canvas id="sharesChart"></canvas></div>
+    </div>
+    <div class="chart-container">
+        <h2>👥 Followers Over Time</h2>
+        <div class="chart-wrapper"><canvas id="followersChart"></canvas></div>
+    </div>
+</div>
+
+<script>
+// ============================================
+// DATA - Add new weeks here
+// ============================================
+const data = {
+    weeks: ["Feb 9"],
+    accounts: {
+        "@homeinspooooo": {
+            color: "#FF6B9D",
+            views: [3848],
+            likes: [92],
+            comments: [0],
+            shares: [6],
+            followers: [44],
+            profileViews: [19]
+        },
+        "@chrisbuildinhomes": {
+            color: "#4ECDC4",
+            views: [1302],
+            likes: [12],
+            comments: [0],
+            shares: [0],
+            followers: [6],
+            profileViews: [9]
+        },
+        "@rachel_kollar": {
+            color: "#A78BFA",
+            views: [2898],
+            likes: [58],
+            comments: [1],
+            shares: [0],
+            followers: [26],
+            profileViews: [11]
+        }
+    }
+};
+
+// ============================================
+// SUMMARY CARDS
+// ============================================
+function buildSummary() {
+    const lastIdx = data.weeks.length - 1;
+    let totalViews = 0, totalLikes = 0, totalFollowers = 0, totalShares = 0;
+    let topAccount = "", topViews = 0;
+
+    for (const [name, acct] of Object.entries(data.accounts)) {
+        const v = acct.views[lastIdx] || 0;
+        totalViews += v;
+        totalLikes += acct.likes[lastIdx] || 0;
+        totalFollowers += acct.followers[lastIdx] || 0;
+        totalShares += acct.shares[lastIdx] || 0;
+        if (v > topViews) { topViews = v; topAccount = name; }
+    }
+
+    document.getElementById('summaryCards').innerHTML = `
+        <div class="card"><div class="value">${totalViews.toLocaleString()}</div><div class="label">Total Views</div></div>
+        <div class="card"><div class="value">${totalLikes.toLocaleString()}</div><div class="label">Total Likes</div></div>
+        <div class="card"><div class="value">${totalFollowers.toLocaleString()}</div><div class="label">Total Followers</div></div>
+        <div class="card"><div class="value">${totalShares.toLocaleString()}</div><div class="label">Total Shares</div></div>
+    `;
+    document.getElementById('topPerformer').innerHTML =
+        `🏆 Top performer: <strong>${topAccount}</strong> with ${topViews.toLocaleString()} views`;
+}
+
+// ============================================
+// CHART BUILDER
+// ============================================
+const chartDefaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+        legend: {
+            labels: { color: '#FFFFFF', usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 12 } }
+        },
+        tooltip: {
+            backgroundColor: '#16213E',
+            titleColor: '#FFFFFF',
+            bodyColor: '#FFFFFF',
+            borderColor: '#2A2A4A',
+            borderWidth: 1,
+            padding: 12,
+            displayColors: true,
+            callbacks: {
+                label: function(ctx) {
+                    return ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}`;
+                }
+            }
+        }
+    },
+    scales: {
+        x: {
+            ticks: { color: '#888899' },
+            grid: { color: '#2A2A4A', drawBorder: false }
+        },
+        y: {
+            ticks: { color: '#888899', callback: v => v.toLocaleString() },
+            grid: { color: '#2A2A4A', drawBorder: false }
+        }
+    }
+};
+
+function makeDatasets(metric) {
+    return Object.entries(data.accounts).map(([name, acct]) => ({
+        label: name,
+        data: acct[metric],
+        borderColor: acct.color,
+        backgroundColor: acct.color + '33',
+        borderWidth: 3,
+        pointRadius: 6,
+        pointHoverRadius: 9,
+        pointBackgroundColor: acct.color,
+        pointBorderColor: '#1A1A2E',
+        pointBorderWidth: 2,
+        tension: 0.3,
+        fill: true
+    }));
+}
+
+function createChart(canvasId, metric) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.weeks,
+            datasets: makeDatasets(metric)
+        },
+        options: JSON.parse(JSON.stringify(chartDefaults))
+    });
+}
+
+// ============================================
+// INIT
+// ============================================
+buildSummary();
+createChart('viewsChart', 'views');
+createChart('likesChart', 'likes');
+createChart('commentsChart', 'comments');
+createChart('sharesChart', 'shares');
+createChart('followersChart', 'followers');
+</script>
+
+</body>
+</html>
