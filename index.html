@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maket Social Automations Analytics</title>
+    <title>AI Socials Tracking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #131316;
-            color: #FFFFFF;
+            background: #F4F2EE;
+            color: #1a1a1a;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             padding: 30px 40px;
         }
@@ -20,19 +20,21 @@
             align-items: center;
             justify-content: center;
             gap: 14px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+        }
+        .header img {
+            width: 48px;
+            height: 48px;
         }
         h1 {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 30px;
+            font-weight: 800;
             letter-spacing: -0.5px;
-        }
-        h1 span {
-            color: #0075ff;
+            color: #1a1a1a;
         }
         .subtitle {
             text-align: center;
-            color: #6b6b7b;
+            color: #888888;
             font-size: 14px;
             font-weight: 500;
             margin-bottom: 32px;
@@ -45,16 +47,16 @@
             margin-bottom: 32px;
         }
         .card {
-            background: #1c1c22;
-            border: 1px solid #2a2a35;
+            background: #FFFFFF;
+            border: 1px solid #e0ddd8;
             border-radius: 14px;
             padding: 26px 16px;
             text-align: center;
-            transition: border-color 0.2s, transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         .card:hover {
-            border-color: #0075ff44;
             transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         .card .value {
             font-size: 36px;
@@ -64,24 +66,24 @@
         }
         .card .label {
             font-size: 12px;
-            color: #6b6b7b;
+            color: #888888;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 600;
         }
-        .card:nth-child(1) .value { color: #0075ff; }
-        .card:nth-child(2) .value { color: #84e6f6; }
-        .card:nth-child(3) .value { color: #f7a49e; }
-        .card:nth-child(4) .value { color: #fecd1a; }
+        .card:nth-child(1) .value { color: #CCE0FF; }
+        .card:nth-child(2) .value { color: #99C2FF; }
+        .card:nth-child(3) .value { color: #66A3FF; }
+        .card:nth-child(4) .value { color: #3385FF; }
         .top-performer {
             text-align: center;
-            color: #fecd1a;
+            color: #005CE5;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 36px;
             padding: 12px 24px;
-            background: #fecd1a0d;
-            border: 1px solid #fecd1a22;
+            background: #FFFFFF;
+            border: 1px solid #e0ddd8;
             border-radius: 10px;
             display: inline-block;
             width: 100%;
@@ -93,20 +95,19 @@
             margin-bottom: 30px;
         }
         .chart-container {
-            background: #1c1c22;
-            border: 1px solid #2a2a35;
+            background: #005CE5;
             border-radius: 14px;
             padding: 24px;
-            transition: border-color 0.2s;
+            transition: transform 0.2s;
         }
         .chart-container:hover {
-            border-color: #0075ff33;
+            transform: translateY(-1px);
         }
         .chart-container h2 {
             font-size: 16px;
             margin-bottom: 16px;
             font-weight: 600;
-            color: #e0e0e8;
+            color: #FFFFFF;
             letter-spacing: -0.3px;
         }
         .chart-wrapper {
@@ -126,13 +127,10 @@
 </head>
 <body>
 <div class="header">
-    <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="16" fill="#0075ff"/>
-        <text x="50" y="68" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-weight="800" font-size="52">M</text>
-    </svg>
-    <h1>Social <span>Automations</span></h1>
+    <img src="https://i.imgur.com/zdA3yc7.png" alt="Maket Logo">
+    <h1>AI Socials Tracking</h1>
 </div>
-<div class="subtitle">Weekly Performance Dashboard</div>
+<div class="subtitle">Weekly Analytics</div>
 <div class="summary-cards" id="summaryCards"></div>
 <div class="top-performer" id="topPerformer"></div>
 <div class="charts-grid">
@@ -158,11 +156,11 @@
     </div>
 </div>
 <script>
-const data = {
+var data = {
     weeks: ["Feb 9"],
     accounts: {
         "@homeinspooooo": {
-            color: "#0075ff",
+            color: "#FAE5D8",
             views: [3848],
             likes: [92],
             comments: [0],
@@ -171,7 +169,7 @@ const data = {
             profileViews: [19]
         },
         "@chrisbuildinhomes": {
-            color: "#84e6f6",
+            color: "#DEF8F7",
             views: [1302],
             likes: [12],
             comments: [0],
@@ -180,7 +178,7 @@ const data = {
             profileViews: [9]
         },
         "@rachel_kollar": {
-            color: "#f7a49e",
+            color: "#F3D5F8",
             views: [2898],
             likes: [58],
             comments: [1],
@@ -191,15 +189,18 @@ const data = {
     }
 };
 function buildSummary() {
-    const lastIdx = data.weeks.length - 1;
-    let totalViews = 0, totalLikes = 0, totalFollowers = 0, totalShares = 0;
-    let topAccount = "", topViews = 0;
-    for (const [name, acct] of Object.entries(data.accounts)) {
-        const v = acct.views[lastIdx] || 0;
+    var lastIdx = data.weeks.length - 1;
+    var totalViews = 0, totalLikes = 0, totalFollowers = 0, totalShares = 0;
+    var topAccount = "", topViews = 0;
+    var entries = Object.entries(data.accounts);
+    for (var i = 0; i < entries.length; i++) {
+        var name = entries[i][0];
+        var acct = entries[i][1];
+        var v = acct.views[lastIdx] || 0;
         totalViews += v;
-        totalLikes += acct.likes[lastIdx] || 0;
-        totalFollowers += acct.followers[lastIdx] || 0;
-        totalShares += acct.shares[lastIdx] || 0;
+        totalLikes += (acct.likes[lastIdx] || 0);
+        totalFollowers += (acct.followers[lastIdx] || 0);
+        totalShares += (acct.shares[lastIdx] || 0);
         if (v > topViews) { topViews = v; topAccount = name; }
     }
     document.getElementById('summaryCards').innerHTML =
@@ -210,14 +211,14 @@ function buildSummary() {
     document.getElementById('topPerformer').innerHTML =
         'Top performer: <strong>' + topAccount + '</strong> with ' + topViews.toLocaleString() + ' views';
 }
-const chartDefaults = {
+var chartDefaults = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: { mode: 'index', intersect: false },
     plugins: {
         legend: {
             labels: {
-                color: '#9999aa',
+                color: '#FFFFFF',
                 usePointStyle: true,
                 pointStyle: 'circle',
                 padding: 18,
@@ -225,12 +226,12 @@ const chartDefaults = {
             }
         },
         tooltip: {
-            backgroundColor: '#1c1c22',
+            backgroundColor: '#003d7a',
             titleColor: '#FFFFFF',
             titleFont: { family: 'Inter', weight: '600' },
-            bodyColor: '#ccccdd',
+            bodyColor: '#e0e0e0',
             bodyFont: { family: 'Inter' },
-            borderColor: '#0075ff44',
+            borderColor: '#FFFFFF33',
             borderWidth: 1,
             padding: 14,
             cornerRadius: 10,
@@ -245,16 +246,16 @@ const chartDefaults = {
     },
     scales: {
         x: {
-            ticks: { color: '#5a5a6a', font: { family: 'Inter', size: 11 } },
-            grid: { color: '#222230', drawBorder: false }
+            ticks: { color: '#FFFFFF99', font: { family: 'Inter', size: 11 } },
+            grid: { color: '#FFFFFF15', drawBorder: false }
         },
         y: {
             ticks: {
-                color: '#5a5a6a',
+                color: '#FFFFFF99',
                 font: { family: 'Inter', size: 11 },
                 callback: function(v) { return v.toLocaleString(); }
             },
-            grid: { color: '#222230', drawBorder: false }
+            grid: { color: '#FFFFFF15', drawBorder: false }
         }
     }
 };
@@ -268,12 +269,12 @@ function makeDatasets(metric) {
             label: name,
             data: acct[metric],
             borderColor: acct.color,
-            backgroundColor: acct.color + '1a',
+            backgroundColor: acct.color + '44',
             borderWidth: 3,
             pointRadius: 6,
             pointHoverRadius: 10,
             pointBackgroundColor: acct.color,
-            pointBorderColor: '#131316',
+            pointBorderColor: '#005CE5',
             pointBorderWidth: 2,
             tension: 0.35,
             fill: true
