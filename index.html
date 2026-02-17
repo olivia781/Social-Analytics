@@ -151,8 +151,8 @@
         <div class="chart-wrapper"><canvas id="sharesChart"></canvas></div>
     </div>
     <div class="chart-container">
-        <h2>Followers Over Time</h2>
-        <div class="chart-wrapper"><canvas id="followersChart"></canvas></div>
+        <h2>Profile Views Over Time</h2>
+        <div class="chart-wrapper"><canvas id="profileViewsChart"></canvas></div>
     </div>
 </div>
 <script>
@@ -165,7 +165,6 @@ var data = {
             likes: [92],
             comments: [0],
             shares: [6],
-            followers: [44],
             profileViews: [19]
         },
         "@chrisbuildinhomes": {
@@ -174,7 +173,6 @@ var data = {
             likes: [12],
             comments: [0],
             shares: [0],
-            followers: [6],
             profileViews: [9]
         },
         "@rachel_kollar": {
@@ -183,14 +181,13 @@ var data = {
             likes: [58],
             comments: [1],
             shares: [0],
-            followers: [26],
             profileViews: [11]
         }
     }
 };
 function buildSummary() {
     var lastIdx = data.weeks.length - 1;
-    var totalViews = 0, totalLikes = 0, totalFollowers = 0, totalShares = 0;
+    var totalViews = 0, totalLikes = 0, totalProfileViews = 0, totalShares = 0;
     var topAccount = "", topViews = 0;
     var entries = Object.entries(data.accounts);
     for (var i = 0; i < entries.length; i++) {
@@ -199,14 +196,14 @@ function buildSummary() {
         var v = acct.views[lastIdx] || 0;
         totalViews += v;
         totalLikes += (acct.likes[lastIdx] || 0);
-        totalFollowers += (acct.followers[lastIdx] || 0);
+        totalProfileViews += (acct.profileViews[lastIdx] || 0);
         totalShares += (acct.shares[lastIdx] || 0);
         if (v > topViews) { topViews = v; topAccount = name; }
     }
     document.getElementById('summaryCards').innerHTML =
         '<div class="card"><div class="value">' + totalViews.toLocaleString() + '</div><div class="label">Total Views</div></div>' +
         '<div class="card"><div class="value">' + totalLikes.toLocaleString() + '</div><div class="label">Total Likes</div></div>' +
-        '<div class="card"><div class="value">' + totalFollowers.toLocaleString() + '</div><div class="label">Total Followers</div></div>' +
+        '<div class="card"><div class="value">' + totalProfileViews.toLocaleString() + '</div><div class="label">Profile Views</div></div>' +
         '<div class="card"><div class="value">' + totalShares.toLocaleString() + '</div><div class="label">Total Shares</div></div>';
     document.getElementById('topPerformer').innerHTML =
         'Top performer: <strong>' + topAccount + '</strong> with ' + topViews.toLocaleString() + ' views';
@@ -298,7 +295,7 @@ createChart('viewsChart', 'views');
 createChart('likesChart', 'likes');
 createChart('commentsChart', 'comments');
 createChart('sharesChart', 'shares');
-createChart('followersChart', 'followers');
+createChart('profileViewsChart', 'profileViews');
 </script>
 </body>
 </html>
