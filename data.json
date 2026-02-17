@@ -1,77 +1,29 @@
 {
-    "weeks": [
-        "Feb 9",
-        "Feb 16"
-    ],
+    "weeks": [],
     "accounts": {
         "@homeinspooooo": {
             "color": "#FAE5D8",
-            "views": [
-                3848,
-                4022
-            ],
-            "likes": [
-                92,
-                96
-            ],
-            "comments": [
-                0,
-                0
-            ],
-            "shares": [
-                6,
-                6
-            ],
-            "profileViews": [
-                19,
-                16
-            ]
+            "views": [],
+            "likes": [],
+            "comments": [],
+            "shares": [],
+            "profileViews": []
         },
         "@chrisbuildinhomes": {
             "color": "#DEF8F7",
-            "views": [
-                1302,
-                2776
-            ],
-            "likes": [
-                12,
-                28
-            ],
-            "comments": [
-                0,
-                0
-            ],
-            "shares": [
-                0,
-                4
-            ],
-            "profileViews": [
-                9,
-                14
-            ]
+            "views": [],
+            "likes": [],
+            "comments": [],
+            "shares": [],
+            "profileViews": []
         },
         "@rachel_kollar": {
             "color": "#F3D5F8",
-            "views": [
-                2898,
-                3174
-            ],
-            "likes": [
-                58,
-                69
-            ],
-            "comments": [
-                1,
-                1
-            ],
-            "shares": [
-                0,
-                0
-            ],
-            "profileViews": [
-                11,
-                13
-            ]
+            "views": [],
+            "likes": [],
+            "comments": [],
+            "shares": [],
+            "profileViews": []
         }
     }
 }
