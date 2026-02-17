@@ -63,7 +63,6 @@
             font-weight: 800;
             margin-bottom: 6px;
             letter-spacing: -1px;
-            color: #005CE5;
         }
         .card .label {
             font-size: 12px;
@@ -72,6 +71,7 @@
             letter-spacing: 1px;
             font-weight: 600;
         }
+        .card .value { color: #005CE5; }
         .top-performer {
             text-align: center;
             color: #005CE5;
@@ -114,6 +114,13 @@
         .chart-full {
             grid-column: 1 / -1;
         }
+        .loading {
+            text-align: center;
+            color: #005CE5;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 40px;
+        }
         @media (max-width: 768px) {
             body { padding: 16px; }
             .summary-cards { grid-template-columns: repeat(2, 1fr); }
@@ -128,7 +135,9 @@
     <h1>AI Socials Tracking</h1>
 </div>
 <div class="subtitle">Weekly Analytics</div>
-<div class="summary-cards" id="summaryCards"></div>
+<div class="summary-cards" id="summaryCards">
+    <div class="loading">Loading data...</div>
+</div>
 <div class="top-performer" id="topPerformer"></div>
 <div class="charts-grid">
     <div class="chart-container chart-full">
@@ -153,35 +162,8 @@
     </div>
 </div>
 <script>
-var data = {
-    weeks: ["Feb 9"],
-    accounts: {
-        "@homeinspooooo": {
-            color: "#FAE5D8",
-            views: [3848],
-            likes: [92],
-            comments: [0],
-            shares: [6],
-            profileViews: [19]
-        },
-        "@chrisbuildinhomes": {
-            color: "#DEF8F7",
-            views: [1302],
-            likes: [12],
-            comments: [0],
-            shares: [0],
-            profileViews: [9]
-        },
-        "@rachel_kollar": {
-            color: "#F3D5F8",
-            views: [2898],
-            likes: [58],
-            comments: [1],
-            shares: [0],
-            profileViews: [11]
-        }
-    }
-};
+var data = null;
+
 function buildSummary() {
     var lastIdx = data.weeks.length - 1;
     var totalViews = 0, totalLikes = 0, totalProfileViews = 0, totalShares = 0;
@@ -205,6 +187,7 @@ function buildSummary() {
     document.getElementById('topPerformer').innerHTML =
         'Top performer: <strong>' + topAccount + '</strong> with ' + topViews.toLocaleString() + ' views';
 }
+
 var chartDefaults = {
     responsive: true,
     maintainAspectRatio: false,
@@ -253,6 +236,7 @@ var chartDefaults = {
         }
     }
 };
+
 function makeDatasets(metric) {
     var datasets = [];
     var entries = Object.entries(data.accounts);
@@ -276,6 +260,7 @@ function makeDatasets(metric) {
     }
     return datasets;
 }
+
 function createChart(canvasId, metric) {
     var ctx = document.getElementById(canvasId).getContext('2d');
     new Chart(ctx, {
@@ -287,12 +272,28 @@ function createChart(canvasId, metric) {
         options: JSON.parse(JSON.stringify(chartDefaults))
     });
 }
-buildSummary();
-createChart('viewsChart', 'views');
-createChart('likesChart', 'likes');
-createChart('commentsChart', 'comments');
-createChart('sharesChart', 'shares');
-createChart('profileViewsChart', 'profileViews');
+
+function initDashboard() {
+    buildSummary();
+    createChart('viewsChart', 'views');
+    createChart('likesChart', 'likes');
+    createChart('commentsChart', 'comments');
+    createChart('sharesChart', 'shares');
+    createChart('profileViewsChart', 'profileViews');
+}
+
+// Load data from external JSON file
+fetch('data.json')
+    .then(function(response) { return response.json(); })
+    .then(function(json) {
+        data = json;
+        initDashboard();
+    })
+    .catch(function(err) {
+        console.error('Failed to load data:', err);
+        document.getElementById('summaryCards').innerHTML =
+            '<div class="loading">Failed to load analytics data.</div>';
+    });
 </script>
 </body>
 </html>
