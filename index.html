@@ -1,12 +1,303 @@
-M
-Social Automations
-Weekly Performance Dashboard
-Views Over Time
-
-Likes Over Time
-
-Comments Over Time
-
-Shares Over Time
-
-Followers Over Time
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maket Social Automations Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #131316;
+            color: #FFFFFF;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 30px 40px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        h1 span {
+            color: #0075ff;
+        }
+        .subtitle {
+            text-align: center;
+            color: #6b6b7b;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 32px;
+            letter-spacing: 0.3px;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .card {
+            background: #1c1c22;
+            border: 1px solid #2a2a35;
+            border-radius: 14px;
+            padding: 26px 16px;
+            text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .card:hover {
+            border-color: #0075ff44;
+            transform: translateY(-2px);
+        }
+        .card .value {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -1px;
+        }
+        .card .label {
+            font-size: 12px;
+            color: #6b6b7b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .card:nth-child(1) .value { color: #0075ff; }
+        .card:nth-child(2) .value { color: #84e6f6; }
+        .card:nth-child(3) .value { color: #f7a49e; }
+        .card:nth-child(4) .value { color: #fecd1a; }
+        .top-performer {
+            text-align: center;
+            color: #fecd1a;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 36px;
+            padding: 12px 24px;
+            background: #fecd1a0d;
+            border: 1px solid #fecd1a22;
+            border-radius: 10px;
+            display: inline-block;
+            width: 100%;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            background: #1c1c22;
+            border: 1px solid #2a2a35;
+            border-radius: 14px;
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+        .chart-container:hover {
+            border-color: #0075ff33;
+        }
+        .chart-container h2 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: #e0e0e8;
+            letter-spacing: -0.3px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+        }
+        .chart-full {
+            grid-column: 1 / -1;
+        }
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .summary-cards { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+            .card .value { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#0075ff"/>
+        <text x="50" y="68" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-weight="800" font-size="52">M</text>
+    </svg>
+    <h1>Social <span>Automations</span></h1>
+</div>
+<div class="subtitle">Weekly Performance Dashboard</div>
+<div class="summary-cards" id="summaryCards"></div>
+<div class="top-performer" id="topPerformer"></div>
+<div class="charts-grid">
+    <div class="chart-container chart-full">
+        <h2>Views Over Time</h2>
+        <div class="chart-wrapper"><canvas id="viewsChart"></canvas></div>
+    </div>
+    <div class="chart-container">
+        <h2>Likes Over Time</h2>
+        <div class="chart-wrapper"><canvas id="likesChart"></canvas></div>
+    </div>
+    <div class="chart-container">
+        <h2>Comments Over Time</h2>
+        <div class="chart-wrapper"><canvas id="commentsChart"></canvas></div>
+    </div>
+    <div class="chart-container">
+        <h2>Shares Over Time</h2>
+        <div class="chart-wrapper"><canvas id="sharesChart"></canvas></div>
+    </div>
+    <div class="chart-container">
+        <h2>Followers Over Time</h2>
+        <div class="chart-wrapper"><canvas id="followersChart"></canvas></div>
+    </div>
+</div>
+<script>
+const data = {
+    weeks: ["Feb 9"],
+    accounts: {
+        "@homeinspooooo": {
+            color: "#0075ff",
+            views: [3848],
+            likes: [92],
+            comments: [0],
+            shares: [6],
+            followers: [44],
+            profileViews: [19]
+        },
+        "@chrisbuildinhomes": {
+            color: "#84e6f6",
+            views: [1302],
+            likes: [12],
+            comments: [0],
+            shares: [0],
+            followers: [6],
+            profileViews: [9]
+        },
+        "@rachel_kollar": {
+            color: "#f7a49e",
+            views: [2898],
+            likes: [58],
+            comments: [1],
+            shares: [0],
+            followers: [26],
+            profileViews: [11]
+        }
+    }
+};
+function buildSummary() {
+    const lastIdx = data.weeks.length - 1;
+    let totalViews = 0, totalLikes = 0, totalFollowers = 0, totalShares = 0;
+    let topAccount = "", topViews = 0;
+    for (const [name, acct] of Object.entries(data.accounts)) {
+        const v = acct.views[lastIdx] || 0;
+        totalViews += v;
+        totalLikes += acct.likes[lastIdx] || 0;
+        totalFollowers += acct.followers[lastIdx] || 0;
+        totalShares += acct.shares[lastIdx] || 0;
+        if (v > topViews) { topViews = v; topAccount = name; }
+    }
+    document.getElementById('summaryCards').innerHTML =
+        '<div class="card"><div class="value">' + totalViews.toLocaleString() + '</div><div class="label">Total Views</div></div>' +
+        '<div class="card"><div class="value">' + totalLikes.toLocaleString() + '</div><div class="label">Total Likes</div></div>' +
+        '<div class="card"><div class="value">' + totalFollowers.toLocaleString() + '</div><div class="label">Total Followers</div></div>' +
+        '<div class="card"><div class="value">' + totalShares.toLocaleString() + '</div><div class="label">Total Shares</div></div>';
+    document.getElementById('topPerformer').innerHTML =
+        'Top performer: <strong>' + topAccount + '</strong> with ' + topViews.toLocaleString() + ' views';
+}
+const chartDefaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+        legend: {
+            labels: {
+                color: '#9999aa',
+                usePointStyle: true,
+                pointStyle: 'circle',
+                padding: 18,
+                font: { family: 'Inter', size: 12, weight: '500' }
+            }
+        },
+        tooltip: {
+            backgroundColor: '#1c1c22',
+            titleColor: '#FFFFFF',
+            titleFont: { family: 'Inter', weight: '600' },
+            bodyColor: '#ccccdd',
+            bodyFont: { family: 'Inter' },
+            borderColor: '#0075ff44',
+            borderWidth: 1,
+            padding: 14,
+            cornerRadius: 10,
+            displayColors: true,
+            boxPadding: 6,
+            callbacks: {
+                label: function(ctx) {
+                    return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString();
+                }
+            }
+        }
+    },
+    scales: {
+        x: {
+            ticks: { color: '#5a5a6a', font: { family: 'Inter', size: 11 } },
+            grid: { color: '#222230', drawBorder: false }
+        },
+        y: {
+            ticks: {
+                color: '#5a5a6a',
+                font: { family: 'Inter', size: 11 },
+                callback: function(v) { return v.toLocaleString(); }
+            },
+            grid: { color: '#222230', drawBorder: false }
+        }
+    }
+};
+function makeDatasets(metric) {
+    var datasets = [];
+    var entries = Object.entries(data.accounts);
+    for (var i = 0; i < entries.length; i++) {
+        var name = entries[i][0];
+        var acct = entries[i][1];
+        datasets.push({
+            label: name,
+            data: acct[metric],
+            borderColor: acct.color,
+            backgroundColor: acct.color + '1a',
+            borderWidth: 3,
+            pointRadius: 6,
+            pointHoverRadius: 10,
+            pointBackgroundColor: acct.color,
+            pointBorderColor: '#131316',
+            pointBorderWidth: 2,
+            tension: 0.35,
+            fill: true
+        });
+    }
+    return datasets;
+}
+function createChart(canvasId, metric) {
+    var ctx = document.getElementById(canvasId).getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.weeks,
+            datasets: makeDatasets(metric)
+        },
+        options: JSON.parse(JSON.stringify(chartDefaults))
+    });
+}
+buildSummary();
+createChart('viewsChart', 'views');
+createChart('likesChart', 'likes');
+createChart('commentsChart', 'comments');
+createChart('sharesChart', 'shares');
+createChart('followersChart', 'followers');
+</script>
+</body>
+</html>
