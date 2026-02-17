@@ -63,6 +63,7 @@
             font-weight: 800;
             margin-bottom: 6px;
             letter-spacing: -1px;
+            color: #005CE5;
         }
         .card .label {
             font-size: 12px;
@@ -71,10 +72,6 @@
             letter-spacing: 1px;
             font-weight: 600;
         }
-        .card:nth-child(1) .value { color: #CCE0FF; }
-        .card:nth-child(2) .value { color: #99C2FF; }
-        .card:nth-child(3) .value { color: #66A3FF; }
-        .card:nth-child(4) .value { color: #3385FF; }
         .top-performer {
             text-align: center;
             color: #005CE5;
@@ -95,7 +92,7 @@
             margin-bottom: 30px;
         }
         .chart-container {
-            background: #005CE5;
+            background: #CCE0FF;
             border-radius: 14px;
             padding: 24px;
             transition: transform 0.2s;
@@ -107,7 +104,7 @@
             font-size: 16px;
             margin-bottom: 16px;
             font-weight: 600;
-            color: #FFFFFF;
+            color: #005CE5;
             letter-spacing: -0.3px;
         }
         .chart-wrapper {
@@ -215,7 +212,7 @@ var chartDefaults = {
     plugins: {
         legend: {
             labels: {
-                color: '#FFFFFF',
+                color: '#1a1a1a',
                 usePointStyle: true,
                 pointStyle: 'circle',
                 padding: 18,
@@ -223,7 +220,7 @@ var chartDefaults = {
             }
         },
         tooltip: {
-            backgroundColor: '#003d7a',
+            backgroundColor: '#005CE5',
             titleColor: '#FFFFFF',
             titleFont: { family: 'Inter', weight: '600' },
             bodyColor: '#e0e0e0',
@@ -243,16 +240,16 @@ var chartDefaults = {
     },
     scales: {
         x: {
-            ticks: { color: '#FFFFFF99', font: { family: 'Inter', size: 11 } },
-            grid: { color: '#FFFFFF15', drawBorder: false }
+            ticks: { color: '#005CE599', font: { family: 'Inter', size: 11 } },
+            grid: { color: '#005CE520', drawBorder: false }
         },
         y: {
             ticks: {
-                color: '#FFFFFF99',
+                color: '#005CE599',
                 font: { family: 'Inter', size: 11 },
                 callback: function(v) { return v.toLocaleString(); }
             },
-            grid: { color: '#FFFFFF15', drawBorder: false }
+            grid: { color: '#005CE520', drawBorder: false }
         }
     }
 };
@@ -271,7 +268,7 @@ function makeDatasets(metric) {
             pointRadius: 6,
             pointHoverRadius: 10,
             pointBackgroundColor: acct.color,
-            pointBorderColor: '#005CE5',
+            pointBorderColor: '#CCE0FF',
             pointBorderWidth: 2,
             tension: 0.35,
             fill: true
