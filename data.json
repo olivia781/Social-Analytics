@@ -1,77 +1,126 @@
 {
-    "weeks": [
-        "Feb 9",
-        "Feb 16"
-    ],
+    "weeks": ["Feb 9", "Feb 16"],
     "accounts": {
         "@homeinspooooo": {
+            "platform": "tiktok",
             "color": "#FAE5D8",
-            "views": [
-                3848,
-                5316
-            ],
-            "likes": [
-                92,
-                95
-            ],
-            "comments": [
-                0,
-                0
-            ],
-            "shares": [
-                6,
-                5
-            ],
-            "profileViews": [
-                19,
-                10
-            ]
+            "views": [3848, 5316],
+            "impressions": [0, 0],
+            "likes": [92, 95],
+            "comments": [0, 0],
+            "shares": [6, 5],
+            "profileViews": [19, 10],
+            "pinClicks": [0, 0]
         },
         "@chrisbuildinhomes": {
-            "color": "#DEF8F7",
-            "views": [
-                1302,
-                11000
-            ],
-            "likes": [
-                12,
-                123
-            ],
-            "comments": [
-                0,
-                3
-            ],
-            "shares": [
-                0,
-                7
-            ],
-            "profileViews": [
-                9,
-                60
-            ]
+            "platform": "tiktok",
+            "color": "#81D4CC",
+            "views": [1302, 11000],
+            "impressions": [0, 0],
+            "likes": [12, 123],
+            "comments": [0, 3],
+            "shares": [0, 7],
+            "profileViews": [9, 60],
+            "pinClicks": [0, 0]
         },
         "@rachel_kollar": {
-            "color": "#F3D5F8",
-            "views": [
-                2898,
-                6320
-            ],
-            "likes": [
-                58,
-                135
-            ],
-            "comments": [
-                1,
-                5
-            ],
-            "shares": [
-                0,
-                8
-            ],
-            "profileViews": [
-                11,
-                21
-            ]
+            "platform": "tiktok",
+            "color": "#C9A0DC",
+            "views": [2898, 6320],
+            "impressions": [0, 0],
+            "likes": [58, 135],
+            "comments": [1, 5],
+            "shares": [0, 8],
+            "profileViews": [11, 21],
+            "pinClicks": [0, 0]
+        },
+        "@dusttodreamhome": {
+            "platform": "tiktok",
+            "color": "#D4B896",
+            "views": [0, 0],
+            "impressions": [0, 0],
+            "likes": [0, 0],
+            "comments": [0, 0],
+            "shares": [0, 0],
+            "profileViews": [0, 0],
+            "pinClicks": [0, 0]
+        },
+        "@dusttodreamhomee (IG)": {
+            "platform": "instagram",
+            "color": "#E88DC4",
+            "views": [0, 0],
+            "impressions": [0, 0],
+            "likes": [0, 0],
+            "comments": [0, 0],
+            "shares": [0, 0],
+            "profileViews": [0, 0],
+            "pinClicks": [0, 0]
+        },
+        "@chrisbuildinhomes (IG)": {
+            "platform": "instagram",
+            "color": "#6DBFE0",
+            "views": [0, 0],
+            "impressions": [0, 0],
+            "likes": [0, 0],
+            "comments": [0, 0],
+            "shares": [0, 0],
+            "profileViews": [0, 0],
+            "pinClicks": [0, 0]
+        },
+        "@that.pinterest.home": {
+            "platform": "instagram",
+            "color": "#8DC4A0",
+            "views": [0, 0],
+            "impressions": [0, 0],
+            "likes": [0, 0],
+            "comments": [0, 0],
+            "shares": [0, 0],
+            "profileViews": [0, 0],
+            "pinClicks": [0, 0]
+        },
+        "@dusttodreamhome (YT)": {
+            "platform": "youtube",
+            "color": "#E07070",
+            "views": [0, 0],
+            "impressions": [0, 0],
+            "likes": [0, 0],
+            "comments": [0, 0],
+            "shares": [0, 0],
+            "profileViews": [0, 0],
+            "pinClicks": [0, 0]
+        },
+        "@maketaiplans": {
+            "platform": "pinterest",
+            "color": "#D4868A",
+            "views": [0, 0],
+            "impressions": [0, 0],
+            "likes": [0, 0],
+            "comments": [0, 0],
+            "shares": [0, 0],
+            "profileViews": [0, 0],
+            "pinClicks": [0, 0]
+        },
+        "@hometipsandtricks": {
+            "platform": "pinterest",
+            "color": "#7A9EC4",
+            "views": [0, 0],
+            "impressions": [0, 0],
+            "likes": [0, 0],
+            "comments": [0, 0],
+            "shares": [0, 0],
+            "profileViews": [0, 0],
+            "pinClicks": [0, 0]
+        },
+        "@alarminglyaesthetic": {
+            "platform": "pinterest",
+            "color": "#A0C47A",
+            "views": [0, 0],
+            "impressions": [0, 0],
+            "likes": [0, 0],
+            "comments": [0, 0],
+            "shares": [0, 0],
+            "profileViews": [0, 0],
+            "pinClicks": [0, 0]
         }
     }
 }

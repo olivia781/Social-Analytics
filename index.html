@@ -37,12 +37,40 @@
             color: #888888;
             font-size: 14px;
             font-weight: 500;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             letter-spacing: 0.3px;
+        }
+        .platform-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+        .platform-tab {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid #e0ddd8;
+            background: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .platform-tab:hover {
+            border-color: #005CE5;
+            color: #005CE5;
+        }
+        .platform-tab.active {
+            background: #005CE5;
+            border-color: #005CE5;
+            color: #FFFFFF;
         }
         .summary-cards {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 16px;
             margin-bottom: 32px;
         }
@@ -59,19 +87,19 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         .card .value {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 800;
             margin-bottom: 6px;
             letter-spacing: -1px;
+            color: #005CE5;
         }
         .card .label {
-            font-size: 12px;
+            font-size: 11px;
             color: #888888;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 600;
         }
-        .card .value { color: #005CE5; }
         .top-performer {
             text-align: center;
             color: #005CE5;
@@ -114,6 +142,9 @@
         .chart-full {
             grid-column: 1 / -1;
         }
+        .chart-hidden {
+            display: none;
+        }
         .loading {
             text-align: center;
             color: #005CE5;
@@ -125,7 +156,7 @@
             body { padding: 16px; }
             .summary-cards { grid-template-columns: repeat(2, 1fr); }
             .charts-grid { grid-template-columns: 1fr; }
-            .card .value { font-size: 28px; }
+            .card .value { font-size: 24px; }
         }
     </style>
 </head>
@@ -148,6 +179,13 @@
     <h1>AI Socials Tracking</h1>
 </div>
 <div class="subtitle">Weekly Analytics</div>
+<div class="platform-tabs" id="platformTabs">
+    <button class="platform-tab active" data-platform="all">All</button>
+    <button class="platform-tab" data-platform="tiktok">TikTok</button>
+    <button class="platform-tab" data-platform="instagram">Instagram</button>
+    <button class="platform-tab" data-platform="youtube">YouTube</button>
+    <button class="platform-tab" data-platform="pinterest">Pinterest</button>
+</div>
 <div class="summary-cards" id="summaryCards">
     <div class="loading">Loading data...</div>
 </div>
@@ -156,6 +194,14 @@
     <div class="chart-container chart-full">
         <h2>Views Over Time</h2>
         <div class="chart-wrapper"><canvas id="viewsChart"></canvas></div>
+    </div>
+    <div class="chart-container chart-full">
+        <h2>Impressions Over Time</h2>
+        <div class="chart-wrapper"><canvas id="impressionsChart"></canvas></div>
+    </div>
+    <div class="chart-container" id="pinClicksContainer">
+        <h2>Pin Clicks Over Time</h2>
+        <div class="chart-wrapper"><canvas id="pinClicksChart"></canvas></div>
     </div>
     <div class="chart-container">
         <h2>Likes Over Time</h2>
@@ -204,17 +250,26 @@ document.getElementById('pwInput').addEventListener('keydown', function(e) {
 if (sessionStorage.getItem('authed') === '1') showDashboard();
 
 var data = null;
+var currentPlatform = 'all';
+var charts = {};
+
+function getFilteredAccounts() {
+    var entries = Object.entries(data.accounts);
+    if (currentPlatform === 'all') return entries;
+    return entries.filter(function(e) { return e[1].platform === currentPlatform; });
+}
 
 function buildSummary() {
     var lastIdx = data.weeks.length - 1;
-    var totalViews = 0, totalLikes = 0, totalProfileViews = 0, totalShares = 0;
+    var totalViews = 0, totalImpressions = 0, totalLikes = 0, totalProfileViews = 0, totalShares = 0;
     var topAccount = "", topViews = 0;
-    var entries = Object.entries(data.accounts);
-    for (var i = 0; i < entries.length; i++) {
-        var name = entries[i][0];
-        var acct = entries[i][1];
+    var filtered = getFilteredAccounts();
+    for (var i = 0; i < filtered.length; i++) {
+        var name = filtered[i][0];
+        var acct = filtered[i][1];
         var v = acct.views[lastIdx] || 0;
         totalViews += v;
+        totalImpressions += (acct.impressions[lastIdx] || 0);
         totalLikes += (acct.likes[lastIdx] || 0);
         totalProfileViews += (acct.profileViews[lastIdx] || 0);
         totalShares += (acct.shares[lastIdx] || 0);
@@ -222,11 +277,17 @@ function buildSummary() {
     }
     document.getElementById('summaryCards').innerHTML =
         '<div class="card"><div class="value">' + totalViews.toLocaleString() + '</div><div class="label">Total Views</div></div>' +
+        '<div class="card"><div class="value">' + totalImpressions.toLocaleString() + '</div><div class="label">Impressions</div></div>' +
         '<div class="card"><div class="value">' + totalLikes.toLocaleString() + '</div><div class="label">Total Likes</div></div>' +
         '<div class="card"><div class="value">' + totalProfileViews.toLocaleString() + '</div><div class="label">Profile Views</div></div>' +
         '<div class="card"><div class="value">' + totalShares.toLocaleString() + '</div><div class="label">Total Shares</div></div>';
-    document.getElementById('topPerformer').innerHTML =
-        'Top performer: <strong>' + topAccount + '</strong> with ' + topViews.toLocaleString() + ' views';
+    if (topAccount && topViews > 0) {
+        document.getElementById('topPerformer').innerHTML =
+            'Top performer: <strong>' + topAccount + '</strong> with ' + topViews.toLocaleString() + ' views';
+        document.getElementById('topPerformer').style.display = '';
+    } else {
+        document.getElementById('topPerformer').style.display = 'none';
+    }
 }
 
 var chartDefaults = {
@@ -280,10 +341,12 @@ var chartDefaults = {
 
 function makeDatasets(metric) {
     var datasets = [];
-    var entries = Object.entries(data.accounts);
-    for (var i = 0; i < entries.length; i++) {
-        var name = entries[i][0];
-        var acct = entries[i][1];
+    var filtered = getFilteredAccounts();
+    for (var i = 0; i < filtered.length; i++) {
+        var name = filtered[i][0];
+        var acct = filtered[i][1];
+        var hasData = acct[metric] && acct[metric].some(function(v) { return v > 0; });
+        if (!hasData) continue;
         datasets.push({
             label: name,
             data: acct[metric],
@@ -302,33 +365,70 @@ function makeDatasets(metric) {
     return datasets;
 }
 
-function createChart(canvasId, metric) {
-    var ctx = document.getElementById(canvasId).getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data.weeks,
-            datasets: makeDatasets(metric)
-        },
-        options: JSON.parse(JSON.stringify(chartDefaults))
-    });
+function createOrUpdateChart(canvasId, metric) {
+    var datasets = makeDatasets(metric);
+    if (charts[canvasId]) {
+        charts[canvasId].data.labels = data.weeks;
+        charts[canvasId].data.datasets = datasets;
+        charts[canvasId].update();
+    } else {
+        var ctx = document.getElementById(canvasId).getContext('2d');
+        charts[canvasId] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.weeks,
+                datasets: datasets
+            },
+            options: JSON.parse(JSON.stringify(chartDefaults))
+        });
+    }
 }
 
-function initDashboard() {
+function updatePinClicksVisibility() {
+    var container = document.getElementById('pinClicksContainer');
+    if (currentPlatform === 'pinterest' || currentPlatform === 'all') {
+        var hasPinData = false;
+        var filtered = getFilteredAccounts();
+        for (var i = 0; i < filtered.length; i++) {
+            if (filtered[i][1].pinClicks && filtered[i][1].pinClicks.some(function(v) { return v > 0; })) {
+                hasPinData = true;
+                break;
+            }
+        }
+        container.classList.toggle('chart-hidden', !hasPinData);
+    } else {
+        container.classList.add('chart-hidden');
+    }
+}
+
+function renderAll() {
     buildSummary();
-    createChart('viewsChart', 'views');
-    createChart('likesChart', 'likes');
-    createChart('commentsChart', 'comments');
-    createChart('sharesChart', 'shares');
-    createChart('profileViewsChart', 'profileViews');
+    createOrUpdateChart('viewsChart', 'views');
+    createOrUpdateChart('impressionsChart', 'impressions');
+    createOrUpdateChart('likesChart', 'likes');
+    createOrUpdateChart('commentsChart', 'comments');
+    createOrUpdateChart('sharesChart', 'shares');
+    createOrUpdateChart('profileViewsChart', 'profileViews');
+    createOrUpdateChart('pinClicksChart', 'pinClicks');
+    updatePinClicksVisibility();
 }
 
-// Load data from external JSON file
+// Platform tab clicks
+document.getElementById('platformTabs').addEventListener('click', function(e) {
+    if (!e.target.classList.contains('platform-tab')) return;
+    var tabs = document.querySelectorAll('.platform-tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+    e.target.classList.add('active');
+    currentPlatform = e.target.getAttribute('data-platform');
+    renderAll();
+});
+
+// Load data
 fetch('data.json')
     .then(function(response) { return response.json(); })
     .then(function(json) {
         data = json;
-        initDashboard();
+        renderAll();
     })
     .catch(function(err) {
         console.error('Failed to load data:', err);
