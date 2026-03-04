@@ -67,17 +67,6 @@
             "profileViews": [0, 0],
             "pinClicks": [0, 0]
         },
-        "@that.pinterest.home": {
-            "platform": "instagram",
-            "color": "#8DC4A0",
-            "views": [0, 0],
-            "impressions": [0, 0],
-            "likes": [0, 0],
-            "comments": [0, 0],
-            "shares": [0, 0],
-            "profileViews": [0, 0],
-            "pinClicks": [0, 0]
-        },
         "@dusttodreamhome (YT)": {
             "platform": "youtube",
             "color": "#E07070",
