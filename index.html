@@ -130,6 +130,19 @@
     </style>
 </head>
 <body>
+<div id="authGate" style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px;">
+    <h1 style="font-size:24px;font-weight:800;letter-spacing:-0.5px;">AI Socials Tracking</h1>
+    <p style="color:#888;font-size:14px;">Enter password to view dashboard</p>
+    <input id="pwInput" type="password" placeholder="Password"
+        style="padding:12px 20px;border:1px solid #e0ddd8;border-radius:10px;font-family:'Inter',sans-serif;font-size:15px;width:260px;outline:none;background:#fff;"
+        autofocus>
+    <button id="pwBtn"
+        style="padding:12px 32px;background:#005CE5;color:#fff;border:none;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">
+        Enter
+    </button>
+    <p id="pwError" style="color:#e53e3e;font-size:13px;display:none;">Incorrect password</p>
+</div>
+<div id="dashboard" style="display:none;">
 <div class="header">
     <img src="https://i.imgur.com/zdA3yc7.png" alt="Maket Logo">
     <h1>AI Socials Tracking</h1>
@@ -161,7 +174,35 @@
         <div class="chart-wrapper"><canvas id="profileViewsChart"></canvas></div>
     </div>
 </div>
+</div>
 <script>
+// Auth gate
+var PASS_HASH = 'a90f5e04aa41eb39ebe7c2c23a4f241369d98ce31a8b8f3d0d2707d6dd6f3114';
+async function hashPass(pw) {
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+}
+async function checkAuth() {
+    var pw = document.getElementById('pwInput').value;
+    var h = await hashPass(pw);
+    if (h === PASS_HASH) {
+        sessionStorage.setItem('authed', '1');
+        showDashboard();
+    } else {
+        document.getElementById('pwError').style.display = 'block';
+        document.getElementById('pwInput').value = '';
+    }
+}
+function showDashboard() {
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+}
+document.getElementById('pwBtn').addEventListener('click', checkAuth);
+document.getElementById('pwInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkAuth();
+});
+if (sessionStorage.getItem('authed') === '1') showDashboard();
+
 var data = null;
 
 function buildSummary() {
